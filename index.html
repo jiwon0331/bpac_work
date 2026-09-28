@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>공연 근무 관리</title>
+  <link rel="stylesheet" href="work-schedule.css">
+  <script type="module" src="work-schedule-ui.js"></script>
+</head>
+<body class="work-demo">
+  <main>
+    <section class="work-schedule" aria-labelledby="work-heading">
+      <header>
+        <h1 id="work-heading">공연 근무 관리</h1>
+        <p class="work-muted">공연 정보를 입력하고 근무시간과 예상 급여를 확인하세요.</p>
+      </header>
+      <form class="work-form">
+        <label for="work-date">날짜
+          <input id="work-date" name="date" type="date" required>
+        </label>
+        <label for="work-start">공연 시작시간
+          <input id="work-start" name="startTime" type="time" required>
+        </label>
+        <label for="work-runtime">러닝타임 (분)
+          <input id="work-runtime" name="runtimeMinutes" type="number" inputmode="numeric" min="1" step="1" placeholder="60" required>
+        </label>
+        <label for="work-place">장소 (선택)
+          <input id="work-place" name="place" type="text" placeholder="공연 장소를 입력하세요">
+        </label>
+      </form>
+      <section class="work-preview" aria-labelledby="work-preview-heading">
+        <h2 id="work-preview-heading">근무 미리보기</h2>
+        <div aria-live="polite" aria-atomic="true">
+          <p class="work-empty work-muted">공연 정보를 입력하면 근무시간이 자동으로 계산됩니다.</p>
+          <div class="work-result" hidden>
+            <dl>
+              <div><dt>출근</dt><dd data-work="arrival"></dd></div>
+              <div><dt>공연</dt><dd data-work="performance"></dd></div>
+              <div><dt>퇴근</dt><dd data-work="departure"></dd></div>
+              <div class="work-duration"><dt>총 근무시간</dt><dd data-work="duration"></dd></div>
+              <div class="work-pay"><dt>예상 급여</dt><dd data-work="pay"></dd></div>
+            </dl>
+            <p class="work-place work-muted" hidden></p>
+          </div>
+        </div>
+      </section>
+      <button class="work-calendar" type="button" disabled aria-describedby="work-calendar-note">Google Calendar에 추가</button>
+      <p id="work-calendar-note" class="work-muted work-note" role="status">날짜, 시작시간과 러닝타임을 입력하면 버튼이 활성화됩니다.</p>
+    </section>
+  </main>
+</body>
+</html>
