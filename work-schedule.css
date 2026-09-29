@@ -27,7 +27,23 @@
 .work-schedule .work-calendar:focus-visible { outline: 3px solid #9db9ec; outline-offset: 3px; }
 .work-schedule .work-note { margin: 8px 0 0; text-align: center; font-size: .8rem; }
 .work-schedule [hidden] { display: none; }
+.work-schedule .work-time { min-width: 0; margin: 0; padding: 0; border: 0; }
+.work-schedule .work-time legend { margin-bottom: 8px; font-size: .9rem; font-weight: 600; }
+.work-schedule .work-time-fields { display: flex; align-items: end; gap: 10px; }
+.work-schedule .work-time-fields label { flex: 1; }
+.work-schedule .work-time-fields > span { padding-bottom: 12px; }
+.work-schedule .work-history { margin-top: 32px; padding-top: 28px; border-top: 1px solid #dce3ed; }
+.work-schedule .work-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+.work-schedule .work-summary > div { padding: 16px 12px; background: #f8fafc; border: 1px solid #e1e7ef; border-radius: 10px; }
+.work-schedule .work-summary span, .work-schedule .work-summary strong { display: block; overflow-wrap: anywhere; }
+.work-schedule .work-summary span { font-size: .85rem; margin-bottom: 8px; color: #566274; }
+.work-schedule .work-summary strong, .work-schedule .work-record-total { color: #31589c; font-weight: 700; }
+.work-schedule .work-record-list { list-style: none; padding: 0; margin: 0; }
+.work-schedule .work-record-list li { padding: 18px 0; border-bottom: 1px solid #e1e7ef; overflow-wrap: anywhere; }
+.work-schedule .work-record-list p { margin: 8px 0; }
+.work-schedule .work-delete { padding: 8px 14px; min-height: 44px; background: #fff; border: 1px solid #cbd2dc; border-radius: 8px; color: #566274; font: inherit; cursor: pointer; }
 @media (max-width: 520px) {
+  .work-schedule .work-summary { grid-template-columns: minmax(0, 1fr); }
   .work-demo { padding: 16px 12px; }
   .work-schedule { padding: 22px 16px; border-radius: 14px; }
   .work-schedule .work-form { grid-template-columns: minmax(0, 1fr); gap: 16px; }
