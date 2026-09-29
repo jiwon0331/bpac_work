@@ -36,7 +36,7 @@ if (section) {
     const fields = form.elements;
     return {
       date: fields.namedItem('date').value,
-      startTime: fields.namedItem('startTime').value,
+      startTime: `${fields.namedItem('startHour').value}:${fields.namedItem('startMinute').value}`,
       runtimeMinutes: fields.namedItem('runtimeMinutes').value,
       place: fields.namedItem('place').value.trim(),
     };
@@ -118,17 +118,33 @@ if (section) {
     placeOutput.hidden = !place;
   }
 
-  const timeField = form.elements.namedItem('startTime');
-  timeField.addEventListener('input', event => {
-    // Keep deletion and editing in the middle predictable.
-    if (event.isComposing || event.inputType?.startsWith('delete') || timeField.selectionStart !== timeField.value.length) return;
-    const value = timeField.value;
-    if (/^[3-9]$/.test(value)) timeField.value = '0' + value + ':';
-    else if (/^\d{2}$/.test(value) && Number(value) <= 23) timeField.value = value + ':';
-    else if (/^\d{3,4}$/.test(value)) {
-      const hour = value.length === 3 ? value.slice(0, 1) : value.slice(0, 2);
-      timeField.value = hour.padStart(2, '0') + ':' + value.slice(-2);
-    } else if (/^\d:\d{0,2}$/.test(value)) timeField.value = '0' + value;
+  const hourField = form.elements.namedItem('startHour');
+  const minuteField = form.elements.namedItem('startMinute');
+  for (const [field, maximum] of [[hourField, 23], [minuteField, 59]]) {
+    field.addEventListener('input', event => {
+      if (event.isComposing) return;
+      field.value = field.value.replace(/[^0-9]/g, '').slice(0, 2);
+      field.setCustomValidity(Number(field.value) > maximum ? `0~${maximum} 사이의 숫자를 입력해 주세요.` : '');
+      // Backspace must not immediately send focus forward again.
+      if (field !== hourField || event.inputType?.startsWith('delete')) return;
+      if (/^[3-9]$/.test(field.value)) field.value = field.value.padStart(2, '0');
+      if (/^\d{2}$/.test(field.value) && Number(field.value) <= maximum) {
+        minuteField.focus();
+        minuteField.select();
+      }
+    });
+    field.addEventListener('blur', () => {
+      if (/^\d$/.test(field.value)) field.value = field.value.padStart(2, '0');
+      field.setCustomValidity(Number(field.value) > maximum ? `0~${maximum} 사이의 숫자를 입력해 주세요.` : '');
+      updatePreview();
+    });
+  }
+  minuteField.addEventListener('keydown', event => {
+    if (event.key === 'Backspace' && minuteField.value === '') {
+      event.preventDefault();
+      hourField.focus();
+      hourField.select();
+    }
   });
   form.addEventListener('input', updatePreview);
   form.addEventListener('submit', event => event.preventDefault());
