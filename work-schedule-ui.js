@@ -1,6 +1,6 @@
 import { calculateWorkSchedule, formatTime, getKoreanDateParts, formatDuration, formatCurrency } from './work-schedule.js';
 import { buildGoogleCalendarUrl } from './work-calendar.js';
-import { STORAGE_KEY, createWorkRecord, loadRecords, saveRecords, recordsForMonth, summarizeRecords } from './work-records.js';
+import { STORAGE_KEY, parseStartTime, createWorkRecord, loadRecords, saveRecords, recordsForMonth, summarizeRecords } from './work-records.js';
 
 const section = document.querySelector('.work-schedule');
 
@@ -24,7 +24,6 @@ if (section) {
   const saveStatus = section.querySelector('#work-save-status');
   const monthField = section.querySelector('#work-month');
   let records = [];
-  let storageReady = false;
   const dateField = form.elements.namedItem('date');
   if (!dateField.value) {
     const today = getKoreanDateParts(new Date());
@@ -36,7 +35,7 @@ if (section) {
     const fields = form.elements;
     return {
       date: fields.namedItem('date').value,
-      startTime: `${fields.namedItem('startHour').value}:${fields.namedItem('startMinute').value}`,
+      startTime: parseStartTime(fields.namedItem('startHour').value, fields.namedItem('startMinute').value),
       runtimeMinutes: fields.namedItem('runtimeMinutes').value,
       place: fields.namedItem('place').value.trim(),
     };
@@ -84,10 +83,8 @@ if (section) {
   function refreshRecords() {
     try {
       records = loadRecords(window.localStorage);
-      storageReady = true;
       renderRecords();
     } catch {
-      storageReady = false;
       saveStatus.textContent = '저장된 기록을 읽을 수 없습니다. 브라우저 저장소 설정을 확인해 주세요. 기존 데이터는 변경하지 않았습니다.';
     }
   }
@@ -96,7 +93,7 @@ if (section) {
     const fields = form.elements;
     const schedule = form.checkValidity() ? calculateWorkSchedule(readInput()) : null;
 
-    calendarButton.disabled = !schedule || !storageReady;
+    calendarButton.disabled = !schedule;
     calendarNote.textContent = schedule ? calendarHint : '날짜, 시작시간과 1분 이상의 러닝타임을 입력하면 버튼이 활성화됩니다.';
     empty.hidden = Boolean(schedule);
     result.hidden = !schedule;
@@ -121,18 +118,22 @@ if (section) {
   const hourField = form.elements.namedItem('startHour');
   const minuteField = form.elements.namedItem('startMinute');
   for (const [field, maximum] of [[hourField, 23], [minuteField, 59]]) {
-    field.addEventListener('input', event => {
+    const handleTimeInput = event => {
       if (event.isComposing) return;
       field.value = field.value.replace(/[^0-9]/g, '').slice(0, 2);
       field.setCustomValidity(Number(field.value) > maximum ? `0~${maximum} 사이의 숫자를 입력해 주세요.` : '');
       // Backspace must not immediately send focus forward again.
-      if (field !== hourField || event.inputType?.startsWith('delete')) return;
+      if (field !== hourField || event.inputType?.startsWith('delete')) { updatePreview(); return; }
       if (/^[3-9]$/.test(field.value)) field.value = field.value.padStart(2, '0');
       if (/^\d{2}$/.test(field.value) && Number(field.value) <= maximum) {
         minuteField.focus();
         minuteField.select();
       }
-    });
+      updatePreview();
+    };
+    field.addEventListener('input', handleTimeInput);
+    field.addEventListener('compositionend', handleTimeInput);
+    field.addEventListener('change', handleTimeInput);
     field.addEventListener('blur', () => {
       if (/^\d$/.test(field.value)) field.value = field.value.padStart(2, '0');
       field.setCustomValidity(Number(field.value) > maximum ? `0~${maximum} 사이의 숫자를 입력해 주세요.` : '');
@@ -147,6 +148,7 @@ if (section) {
     }
   });
   form.addEventListener('input', updatePreview);
+  form.addEventListener('change', updatePreview);
   form.addEventListener('submit', event => event.preventDefault());
   monthField.addEventListener('input', renderRecords);
   calendarButton.addEventListener('click', () => {
