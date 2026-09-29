@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>공연 근무 관리</title>
+  <link rel="stylesheet" href="work-schedule.css">
+  <script type="module" src="work-schedule-ui.js?v=20260929-input2"></script>
+</head>
+<body class="work-demo">
+  <main>
+    <section class="work-schedule" aria-labelledby="work-heading">
+      <header>
+        <h1 id="work-heading">공연 근무 관리</h1>
+        <p class="work-muted">공연 정보를 입력하고 근무시간과 예상 급여를 확인하세요.</p>
+      </header>
+      <form class="work-form">
+        <label for="work-date">날짜
+          <input id="work-date" name="date" type="date" required>
+        </label>
+        <fieldset class="work-time">
+          <legend>공연 시작 시간</legend>
+          <div class="work-time-fields">
+            <input id="work-hour" name="startHour" type="text" inputmode="numeric" maxlength="2" pattern="([0-9]|[01][0-9]|2[0-3])" placeholder="HH" aria-label="공연 시작 시 (00~23)" autocomplete="off" required>
+            <span aria-hidden="true">:</span>
+            <input id="work-minute" name="startMinute" type="text" inputmode="numeric" maxlength="2" pattern="([0-9]|[0-5][0-9])" placeholder="MM" aria-label="공연 시작 분 (00~59)" autocomplete="off" required>
+          </div>
+        </fieldset>
+        <label for="work-runtime">러닝타임 (분)
+          <input id="work-runtime" name="runtimeMinutes" type="number" inputmode="numeric" min="1" step="1" placeholder="60" required>
+        </label>
+        <label for="work-place">장소 (선택)
+          <input id="work-place" name="place" type="text" placeholder="공연 장소를 입력하세요">
+        </label>
+      </form>
+      <section class="work-preview" aria-labelledby="work-preview-heading">
+        <h2 id="work-preview-heading">근무 미리보기</h2>
+        <div aria-live="polite" aria-atomic="true">
+          <p class="work-empty work-muted">공연 정보를 입력하면 근무시간이 자동으로 계산됩니다.</p>
+          <div class="work-result" hidden>
+            <dl>
+              <div><dt>출근</dt><dd data-work="arrival"></dd></div>
+              <div><dt>공연</dt><dd data-work="performance"></dd></div>
+              <div><dt>퇴근</dt><dd data-work="departure"></dd></div>
+              <div class="work-duration"><dt>총 근무시간</dt><dd data-work="duration"></dd></div>
+              <div class="work-pay"><dt>예상 급여</dt><dd data-work="pay"></dd></div>
+            </dl>
+            <p class="work-place work-muted" hidden></p>
+          </div>
+        </div>
+      </section>
+      <button class="work-calendar" id="work-calendar-button" type="button" disabled aria-describedby="work-calendar-note work-save-status">Google Calendar에 추가 · 기록 저장</button>
+      <p id="work-save-status" class="work-muted work-note" role="status">앱에 기록을 저장한 뒤 Calendar 작성 화면을 엽니다. 일정은 Calendar에서 저장해 주세요.</p>
+      <p id="work-calendar-note" class="work-muted work-note" role="status">날짜, 시작시간과 러닝타임을 입력하면 버튼이 활성화됩니다.</p>
+      <section class="work-history" aria-labelledby="work-history-heading">
+        <h2 id="work-history-heading">월별 근무 기록</h2>
+        <label for="work-month">조회 월<input id="work-month" type="month" required></label>
+        <p class="work-muted">공연 날짜가 속한 월을 기준으로 집계합니다. 목록은 날짜순입니다.</p>
+        <div class="work-summary" aria-live="polite">
+          <div><span>근무 횟수</span><strong id="work-count">0회</strong></div>
+          <div><span>총 근무시간</span><strong id="work-total-time">0시간 0분</strong></div>
+          <div><span>총 예상 급여</span><strong id="work-total-pay">0원</strong></div>
+        </div>
+        <p id="work-records-empty" class="work-muted">이 달에 저장된 근무 기록이 없습니다.</p>
+        <ul class="work-record-list" aria-label="저장된 근무 기록"></ul>
+      </section>
+    </section>
+  </main>
+</body>
+</html>
