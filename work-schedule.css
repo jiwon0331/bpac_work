@@ -7,7 +7,7 @@
 .work-schedule .work-muted { color: #627083; }
 .work-schedule .work-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin: 28px 0; }
 .work-schedule label { display: grid; gap: 8px; min-width: 0; font-size: .9rem; font-weight: 600; }
-.work-schedule input { width: 100%; min-width: 0; min-height: 46px; padding: 11px 12px; border: 1px solid #cbd2dc; border-radius: 9px; background: #fff; color: inherit; font: inherit; font-size: 1rem; }
+.work-schedule input { box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0; min-height: 46px; padding: 11px 12px; border: 1px solid #cbd2dc; border-radius: 9px; background: #fff; color: inherit; font: inherit; font-size: 1rem; }
 .work-schedule input:focus-visible { outline: 3px solid #c7d7fc; border-color: #4267b2; }
 .work-schedule .work-preview { padding: 22px; border: 1px solid #e1e7ef; border-radius: 12px; background: #f8fafc; }
 .work-schedule .work-empty { margin: 0; }
@@ -29,9 +29,16 @@
 .work-schedule [hidden] { display: none; }
 .work-schedule .work-time { min-width: 0; margin: 0; padding: 0; border: 0; }
 .work-schedule .work-time legend { margin-bottom: 8px; font-size: .9rem; font-weight: 600; }
-.work-schedule .work-time-fields { display: flex; align-items: end; gap: 10px; }
-.work-schedule .work-time-fields label { flex: 1; }
-.work-schedule .work-time-fields > span { padding-bottom: 12px; }
+.work-schedule .work-time-fields { display: flex; align-items: center; width: 100%; font-weight: 600; min-width: 0; max-width: 100%; min-height: 46px; padding: 0 12px; border: 1px solid #cbd2dc; border-radius: 9px; background: #fff; }
+.work-schedule .work-time-fields input { flex: 0 1 3ch; width: 3ch; min-width: 0; min-height: 44px; padding: 11px 0; border: 0; border-radius: 0; text-align: center; font-variant-numeric: tabular-nums; }
+.work-schedule .work-time-fields > span { flex: 0 0 auto; padding: 0 6px; }
+.work-schedule .work-time-fields:focus-within { outline: 3px solid #c7d7fc; border-color: #4267b2; }
+.work-schedule .work-time-fields input:focus-visible { outline: none; }
+/* Allow Safari's native date/month controls to shrink inside grid tracks. */
+.work-schedule .work-form, .work-schedule .work-history, .work-schedule .work-form > *, .work-schedule .work-history > label { min-width: 0; }
+.work-schedule input[type="date"], .work-schedule input[type="month"] { display: block; box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0; -webkit-appearance: none; appearance: none; }
+.work-schedule input[type="date"]::-webkit-date-and-time-value, .work-schedule input[type="month"]::-webkit-date-and-time-value { min-width: 0; }
+.work-schedule input[type="date"]::-webkit-datetime-edit, .work-schedule input[type="month"]::-webkit-datetime-edit { min-width: 0; padding: 0; }
 .work-schedule .work-history { margin-top: 32px; padding-top: 28px; border-top: 1px solid #dce3ed; }
 .work-schedule .work-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
 .work-schedule .work-summary > div { padding: 16px 12px; background: #f8fafc; border: 1px solid #e1e7ef; border-radius: 10px; }
