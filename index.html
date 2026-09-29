@@ -18,8 +18,8 @@
         <label for="work-date">날짜
           <input id="work-date" name="date" type="date" required>
         </label>
-        <label for="work-start">공연 시작시간
-          <input id="work-start" name="startTime" type="time" required>
+        <label for="work-start">공연 시작 시간
+          <input id="work-start" name="startTime" type="text" inputmode="numeric" maxlength="5" pattern="[0-2][0-9]:[0-5][0-9]" placeholder="18:30" autocomplete="off" required>
         </label>
         <label for="work-runtime">러닝타임 (분)
           <input id="work-runtime" name="runtimeMinutes" type="number" inputmode="numeric" min="1" step="1" placeholder="60" required>
@@ -44,8 +44,21 @@
           </div>
         </div>
       </section>
-      <button class="work-calendar" type="button" disabled aria-describedby="work-calendar-note">Google Calendar에 추가</button>
+      <button class="work-calendar" id="work-calendar-button" type="button" disabled aria-describedby="work-calendar-note work-save-status">Google Calendar에 추가 · 기록 저장</button>
+      <p id="work-save-status" class="work-muted work-note" role="status">앱에 기록을 저장한 뒤 Calendar 작성 화면을 엽니다. 일정은 Calendar에서 저장해 주세요.</p>
       <p id="work-calendar-note" class="work-muted work-note" role="status">날짜, 시작시간과 러닝타임을 입력하면 버튼이 활성화됩니다.</p>
+      <section class="work-history" aria-labelledby="work-history-heading">
+        <h2 id="work-history-heading">월별 근무 기록</h2>
+        <label for="work-month">조회 월<input id="work-month" type="month" required></label>
+        <p class="work-muted">공연 날짜가 속한 월을 기준으로 집계합니다. 목록은 날짜순입니다.</p>
+        <div class="work-summary" aria-live="polite">
+          <div><span>근무 횟수</span><strong id="work-count">0회</strong></div>
+          <div><span>총 근무시간</span><strong id="work-total-time">0시간 0분</strong></div>
+          <div><span>총 예상 급여</span><strong id="work-total-pay">0원</strong></div>
+        </div>
+        <p id="work-records-empty" class="work-muted">이 달에 저장된 근무 기록이 없습니다.</p>
+        <ul class="work-record-list" aria-label="저장된 근무 기록"></ul>
+      </section>
     </section>
   </main>
 </body>
